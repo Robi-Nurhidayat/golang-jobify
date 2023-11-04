@@ -26,12 +26,14 @@ func (h *JobsHandler) CreateJobs(c *gin.Context) {
 	if err != nil {
 
 		c.JSON(http.StatusBadRequest, nil)
+		return
 	}
 
 	job, err := h.service.CreateJob(input)
 	if err != nil {
 
 		c.JSON(http.StatusBadRequest, nil)
+		return
 	}
 
 	response := helper.ApiResponse("Successfully create job", http.StatusOK, "success", jobs.FormatterJob(job))
@@ -48,6 +50,7 @@ func (h *JobsHandler) GetAllJobs(c *gin.Context) {
 	if err != nil {
 
 		c.JSON(http.StatusBadRequest, nil)
+		return
 	}
 
 	var jobFormat []jobs.JobsFormatter
@@ -59,5 +62,28 @@ func (h *JobsHandler) GetAllJobs(c *gin.Context) {
 	response := helper.ApiResponse("Successfully create job", http.StatusOK, "success", jobFormat)
 
 	c.JSON(http.StatusOK, response)
+
+}
+
+
+func (h *JobsHandler) DeleteJob(c *gin.Context) {
+
+	var input jobs.JobDelete
+	err := c.ShouldBindUri(&input)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, nil)
+		return
+	}
+
+	id := input.Id
+	idByJob,err := h.service.DeleteJob(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, nil)
+		return
+	}
+
+	response := helper.ApiResponse("successfully delete",http.StatusOK,"success", idByJob)
+	c.JSON(http.StatusOK,response)
 
 }

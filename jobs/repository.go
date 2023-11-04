@@ -6,7 +6,8 @@ type JobsRepositoryImpl interface {
 	CreateJob(jobs Jobs) (Jobs, error)
 	GetAllJobs() ([]Jobs, error)
 	UpdateJob(jobs Jobs) (Jobs, error)
-	DeleteJob(id int) (Jobs, error)
+	DeleteJob(id int) (int,error)
+	GetById(id int) (Jobs,error)
 }
 
 type JobsRepository struct {
@@ -53,7 +54,23 @@ func (j *JobsRepository) UpdateJob(jobs Jobs) (Jobs, error) {
 	return jobs,err
 }
 
-func (j *JobsRepository) DeleteJob(id int) (Jobs, error) {
-	//TODO implement me
-	panic("implement me")
-}
+func (j *JobsRepository) DeleteJob(id int)  (int,error) {
+	var jobs Jobs
+	err := j.db.Where("id = ?",id).Delete(&jobs).Error
+
+	if err != nil {
+		return id,err
+	}
+
+	return id,nil
+} 
+func (j *JobsRepository) GetById(id int)  (Jobs,error) {
+	var job Jobs
+	err := j.db.Where("id = ?",id).Find(&job).Error
+
+	if err != nil {
+		return job,err
+	}
+
+	return job,nil
+} 

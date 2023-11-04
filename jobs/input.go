@@ -9,3 +9,8 @@ type JobsCreateInput struct {
 	JobType     string `json:"job_type"`
 	JobLocation string `json:"job_location"`
 }
+
+
+type JobId struct {
+	Id int `uri:"id"`
+}

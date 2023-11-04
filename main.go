@@ -35,5 +35,6 @@ func main() {
 	api := r.Group("api/v1")
 	api.POST("/job", jobsHandler.CreateJobs)
 	api.GET("/jobs", jobsHandler.GetAllJobs)
+	api.DELETE("/jobs/:id", jobsHandler.DeleteJob)
 	r.Run()
 }
