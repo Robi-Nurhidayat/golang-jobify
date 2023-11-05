@@ -20,16 +20,20 @@ func main() {
 	}
 
 	// repository
-	jobsRepository := jobs.NewJobsRepository(db)
+	// jobsRepository := jobs.NewJobsRepository(db)
+	jobRepository := jobs.NewJobsRepository(db)
 
 	// service
-	jobsService := jobs.NewJobsService(jobsRepository)
+	// jobsService := jobs.NewJobsService(jobsRepository)
+
+	jobService := jobs.NewJobsService(jobRepository)
 
 	// handler
 
 	// jobsHandler := handler.NewJobsHandler(jobsService)
 
-	jobsHandler := handler.NewJobsHandler(jobsService)
+	// jobsHandler := handler.NewJobsHandler(jobsService)
+	jobsHandler := handler.NewJobsHandler(jobService)
 
 	r := gin.Default()
 	api := r.Group("api/v1")
