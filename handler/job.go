@@ -69,27 +69,33 @@ func (h *JobsHandler) DeleteJob(c *gin.Context) {
 	err := c.ShouldBindUri(&input)
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, nil)
+		response := helper.ApiResponse("Not found id", http.StatusFound, "failed", "tidak ada id")
+		c.JSON(http.StatusBadRequest, response)
+
 		return
 	}
 
-	if input.Id == 0 {
-		c.JSON(http.StatusBadRequest, nil)
-		return
-	}
-
-	idByJob, err := h.service.DeleteJob(input)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, nil)
-		return
-	}
-
-	job,err := h.service.GetById(idByJob)
+	job, err := h.service.GetById(input.Id)
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, nil)
+		response := helper.ApiResponse("Not found id", http.StatusFound, "failed", "tidak ada id")
+		c.JSON(http.StatusBadRequest, response)
 		return
 	}
+
+	if job.Id == 0 {
+		response := helper.ApiResponse("Not found id", http.StatusFound, "failed", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	_, err = h.service.DeleteJob(input)
+	if err != nil {
+		response := helper.ApiResponse("Not found id", http.StatusFound, "failed", "tidak ada id")
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
 	response := helper.ApiResponse("successfully delete", http.StatusOK, "success", jobs.FormatterJob(job))
 	c.JSON(http.StatusOK, response)
 
