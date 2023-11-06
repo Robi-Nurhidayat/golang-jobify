@@ -40,5 +40,6 @@ func main() {
 	api.POST("/job", jobsHandler.CreateJobs)
 	api.GET("/jobs", jobsHandler.GetAllJobs)
 	api.DELETE("/jobs/:id", jobsHandler.DeleteJob)
+	api.PUT("/jobs/:id", jobsHandler.Update)
 	r.Run()
 }

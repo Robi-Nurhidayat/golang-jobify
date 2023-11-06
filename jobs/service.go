@@ -5,6 +5,7 @@ type JobsService interface {
 	GetAllJobs() ([]Jobs, error)
 	DeleteJob(jobId JobId) (int, error)
 	GetById(id int) (Jobs, error)
+	Update(jobs Jobs) (Jobs, error)
 }
 
 type jobsService struct {
@@ -56,6 +57,16 @@ func (s *jobsService) DeleteJob(jobId JobId) (int, error) {
 }
 func (s *jobsService) GetById(id int) (Jobs, error) {
 	job, err := s.repository.GetById(id)
+
+	if err != nil {
+		return job, err
+	}
+
+	return job, nil
+}
+
+func (s *jobsService) Update(jobs Jobs) (Jobs, error) {
+	job, err := s.repository.UpdateJob(jobs)
 
 	if err != nil {
 		return job, err
