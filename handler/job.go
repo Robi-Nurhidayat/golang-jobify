@@ -24,15 +24,15 @@ func (h *JobsHandler) CreateJobs(c *gin.Context) {
 	err := c.ShouldBindJSON(&input)
 
 	if err != nil {
-
-		c.JSON(http.StatusBadRequest, nil)
+		response := helper.ApiResponse("Failed to create job", http.StatusFound, "failed", nil)
+		c.JSON(http.StatusBadRequest, response)
 		return
 	}
 
 	job, err := h.service.CreateJob(input)
 	if err != nil {
-
-		c.JSON(http.StatusBadRequest, nil)
+		response := helper.ApiResponse("Failed to create job", http.StatusFound, "failed", nil)
+		c.JSON(http.StatusBadRequest, response)
 		return
 	}
 
@@ -46,8 +46,8 @@ func (h *JobsHandler) GetAllJobs(c *gin.Context) {
 
 	jobsAll, err := h.service.GetAllJobs()
 	if err != nil {
-
-		c.JSON(http.StatusBadRequest, nil)
+		response := helper.ApiResponse("Failed get All data", http.StatusBadRequest, "failed", nil)
+		c.JSON(http.StatusBadRequest, response)
 		return
 	}
 
