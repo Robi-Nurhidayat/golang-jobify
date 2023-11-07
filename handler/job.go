@@ -24,14 +24,16 @@ func (h *JobsHandler) CreateJobs(c *gin.Context) {
 	err := c.ShouldBindJSON(&input)
 
 	if err != nil {
-		response := helper.ApiResponse("Failed to create job", http.StatusFound, "failed", nil)
+
+		response := helper.ApiResponse("Please isi semua field", http.StatusFound, "failed", helper.FormatValidationError(err))
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
 
 	job, err := h.service.CreateJob(input)
 	if err != nil {
-		response := helper.ApiResponse("Failed to create job", http.StatusFound, "failed", nil)
+
+		response := helper.ApiResponse("Failed to create job", http.StatusFound, "failed", err.Error())
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
@@ -108,7 +110,7 @@ func (h *JobsHandler) Update(c *gin.Context) {
 	err := c.ShouldBindUri(&input)
 
 	if err != nil {
-		response := helper.ApiResponse("Not found id", http.StatusFound, "failed", "tidak ada id")
+		response := helper.ApiResponse("Not found id", http.StatusFound, "failed", err.Error())
 		c.JSON(http.StatusBadRequest, response)
 
 		return
@@ -117,13 +119,13 @@ func (h *JobsHandler) Update(c *gin.Context) {
 	job, err := h.service.GetById(input.Id)
 
 	if err != nil {
-		response := helper.ApiResponse("Not found id", http.StatusFound, "failed", "tidak ada id")
+		response := helper.ApiResponse("Not found id", http.StatusFound, "failed", err.Error())
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
 
 	if job.Id == 0 {
-		response := helper.ApiResponse("Not found id", http.StatusFound, "failed", nil)
+		response := helper.ApiResponse("Not found id", http.StatusFound, "failed", err.Error())
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
@@ -133,20 +135,11 @@ func (h *JobsHandler) Update(c *gin.Context) {
 	err = c.ShouldBindJSON(&jobInput)
 
 	if err != nil {
-		response := helper.ApiResponse("Not found id", http.StatusFound, "failed", "tidak ada id")
+		response := helper.ApiResponse("Not found id", http.StatusFound, "failed", helper.FormatValidationError(err))
 		c.JSON(http.StatusBadRequest, response)
 
 		return
 	}
-
-	//jobById := jobs.Jobs{
-	//	Id:          job.Id,
-	//	Company:     jobInput.Company,
-	//	Position:    jobInput.Position,
-	//	Status:      jobInput.Status,
-	//	JobType:     jobInput.JobType,
-	//	JobLocation: jobInput.JobLocation,
-	//}
 
 	job.Company = jobInput.Company
 	job.Position = jobInput.Position
@@ -156,7 +149,7 @@ func (h *JobsHandler) Update(c *gin.Context) {
 
 	jobUpdate, err := h.service.Update(job)
 	if err != nil {
-		response := helper.ApiResponse("failed update job", http.StatusBadRequest, "failed", nil)
+		response := helper.ApiResponse("failed update job", http.StatusBadRequest, "failed", err.Error())
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
