@@ -3,6 +3,7 @@ package main
 import (
 	"jobify/handler"
 	"jobify/jobs"
+	"jobify/user"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -20,26 +21,27 @@ func main() {
 	}
 
 	// repository
-	// jobsRepository := jobs.NewJobsRepository(db)
+	userRepository := user.NewUserRepository(db)
 	jobRepository := jobs.NewJobsRepository(db)
 
 	// service
-	// jobsService := jobs.NewJobsService(jobsRepository)
-
+	userService := user.NewUserService(userRepository)
 	jobService := jobs.NewJobsService(jobRepository)
 
 	// handler
-
-	// jobsHandler := handler.NewJobsHandler(jobsService)
-
-	// jobsHandler := handler.NewJobsHandler(jobsService)
+	userHandler := handler.NewUserHandler(userService)
 	jobsHandler := handler.NewJobsHandler(jobService)
 
 	r := gin.Default()
 	api := r.Group("api/v1")
+	//users
+	api.POST("/user/register", userHandler.Register)
+
+	//jobs
 	api.POST("/job", jobsHandler.CreateJobs)
 	api.GET("/jobs", jobsHandler.GetAllJobs)
 	api.DELETE("/jobs/:id", jobsHandler.DeleteJob)
 	api.PUT("/jobs/:id", jobsHandler.Update)
+
 	r.Run()
 }

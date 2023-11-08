@@ -7,11 +7,15 @@ type UserRepository interface {
 	FindByEmail(email string) (User, error)
 }
 
-type userRepositoryImpl struct {
+type userRepository struct {
 	db *gorm.DB
 }
 
-func (repository *userRepositoryImpl) Register(user User) (User, error) {
+func NewUserRepository(db *gorm.DB) *userRepository {
+	return &userRepository{db: db}
+}
+
+func (repository *userRepository) Register(user User) (User, error) {
 	err := repository.db.Create(&user).Error
 
 	if err != nil {
@@ -22,7 +26,7 @@ func (repository *userRepositoryImpl) Register(user User) (User, error) {
 
 }
 
-func (repository *userRepositoryImpl) FindByEmail(email string) (User, error) {
+func (repository *userRepository) FindByEmail(email string) (User, error) {
 	var user User
 
 	err := repository.db.Where("email = ?", email).Find(&user).Error
