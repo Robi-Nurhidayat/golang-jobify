@@ -1,6 +1,9 @@
 package user
 
-import "golang.org/x/crypto/bcrypt"
+import (
+	"errors"
+	"golang.org/x/crypto/bcrypt"
+)
 
 type UserService interface {
 	Register(input RegisterInput) (User, error)
@@ -46,6 +49,24 @@ func (service *userService) Register(input RegisterInput) (User, error) {
 }
 
 func (service *userService) Login(input LoginInput) (User, error) {
-	//TODO implement me
-	panic("implement me")
+
+	email := input.Email
+	password := input.Password
+
+	findEmail, err := service.repository.FindByEmail(email)
+	if err != nil {
+		return findEmail, err
+	}
+
+	if findEmail.Id == 0 {
+		return findEmail, errors.New("no user found on that email")
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(findEmail.Password), []byte(password))
+
+	if err != nil {
+		return findEmail, err
+	}
+
+	return findEmail, nil
 }
