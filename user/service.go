@@ -8,6 +8,7 @@ import (
 type UserService interface {
 	Register(input RegisterInput) (User, error)
 	Login(input LoginInput) (User, error)
+	GetUserById(id int) (User, error)
 }
 
 type userService struct {
@@ -69,4 +70,19 @@ func (service *userService) Login(input LoginInput) (User, error) {
 	}
 
 	return findEmail, nil
+}
+
+func (service *userService) GetUserById(id int) (User, error) {
+
+	user, err := service.repository.FindById(id)
+
+	if err != nil {
+		return user, err
+	}
+
+	if user.Id == 0 {
+		return user, errors.New("No user found on whith that ID")
+	}
+
+	return user, nil
 }
