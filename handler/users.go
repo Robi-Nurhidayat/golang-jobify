@@ -59,7 +59,7 @@ func (h *userHandler) Login(c *gin.Context) {
 		return
 	}
 
-	response := helper.ApiResponse("Success register", http.StatusOK, "success", user.FormatterUser(userLogin))
-	c.JSON(http.StatusBadRequest, response)
+	response := helper.ApiResponse("Success login", http.StatusOK, "success", user.FormatterUser(userLogin))
+	c.JSON(http.StatusOK, response)
 
 }
