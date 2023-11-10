@@ -4,6 +4,7 @@ import "time"
 
 type Jobs struct {
 	Id          int
+	UserId      int
 	Company     string
 	Position    string
 	Status      string

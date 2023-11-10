@@ -32,22 +32,23 @@ func main() {
 	// service
 	userService := user.NewUserService(userRepository)
 	jobService := jobs.NewJobsService(jobRepository)
+	authService := auth.NewJwtService()
 
 	// handler
-	userHandler := handler.NewUserHandler(userService)
+	userHandler := handler.NewUserHandler(userService, authService)
 	jobsHandler := handler.NewJobsHandler(jobService)
 
 	r := gin.Default()
 	api := r.Group("api/v1")
 	//users
 	api.POST("/user/register", userHandler.Register)
-	api.POST("/user/login", userHandler.Login)
+	api.POST("/user/login", authMiddleware(authService, userService), userHandler.Login)
 
 	//jobs
-	api.POST("/job", jobsHandler.CreateJobs)
-	api.GET("/jobs", jobsHandler.GetAllJobs)
-	api.DELETE("/jobs/:id", jobsHandler.DeleteJob)
-	api.PUT("/jobs/:id", jobsHandler.Update)
+	api.POST("/job", authMiddleware(authService, userService), jobsHandler.CreateJobs)
+	api.GET("/jobs", authMiddleware(authService, userService), jobsHandler.GetAllJobs)
+	api.DELETE("/jobs/:id", authMiddleware(authService, userService), jobsHandler.DeleteJob)
+	api.PUT("/jobs/:id", authMiddleware(authService, userService), jobsHandler.Update)
 
 	r.Run()
 }

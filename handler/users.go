@@ -2,18 +2,21 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
+	"jobify/auth"
 	"jobify/helper"
 	"jobify/user"
 	"net/http"
 )
 
 type userHandler struct {
-	service user.UserService
+	service     user.UserService
+	authService auth.ServiceAuth
 }
 
-func NewUserHandler(service user.UserService) *userHandler {
+func NewUserHandler(service user.UserService, authService auth.ServiceAuth) *userHandler {
 	return &userHandler{
-		service: service,
+		service:     service,
+		authService: authService,
 	}
 }
 
@@ -36,7 +39,13 @@ func (h *userHandler) Register(c *gin.Context) {
 		return
 	}
 
-	response := helper.ApiResponse("Success register", http.StatusOK, "success", user.FormatterUser(userCreated))
+	token, err := h.authService.GenerateToken(userCreated.Id)
+	if err != nil {
+		response := helper.ApiResponse("Failed to register", http.StatusBadRequest, "failed", helper.FormatValidationError(err))
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+	response := helper.ApiResponse("Success register", http.StatusOK, "success", user.FormatterUser(userCreated, token))
 	c.JSON(http.StatusBadRequest, response)
 }
 
@@ -59,7 +68,14 @@ func (h *userHandler) Login(c *gin.Context) {
 		return
 	}
 
-	response := helper.ApiResponse("Success login", http.StatusOK, "success", user.FormatterUser(userLogin))
+	token, err := h.authService.GenerateToken(userLogin.Id)
+	if err != nil {
+		response := helper.ApiResponse("failed login", http.StatusBadRequest, "failed", helper.FormatValidationError(err))
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	response := helper.ApiResponse("Success login", http.StatusOK, "success", user.FormatterUser(userLogin, token))
 	c.JSON(http.StatusOK, response)
 
 }

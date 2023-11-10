@@ -3,6 +3,7 @@ package handler
 import (
 	"jobify/helper"
 	"jobify/jobs"
+	"jobify/user"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -30,6 +31,9 @@ func (h *JobsHandler) CreateJobs(c *gin.Context) {
 		return
 	}
 
+	userByAuth := c.MustGet("currentUser").(user.User)
+
+	input.User = userByAuth
 	job, err := h.service.CreateJob(input)
 	if err != nil {
 

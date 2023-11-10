@@ -26,6 +26,7 @@ func (s *jobsService) CreateJob(input JobsCreateInput) (Jobs, error) {
 	jobs.Status = input.Status
 	jobs.JobType = input.JobType
 	jobs.JobLocation = input.JobLocation
+	jobs.UserId = input.User.Id
 
 	job, err := s.repository.CreateJob(jobs)
 
