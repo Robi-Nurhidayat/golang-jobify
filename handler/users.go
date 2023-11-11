@@ -79,3 +79,24 @@ func (h *userHandler) Login(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 
 }
+
+func (h *userHandler) AllUsers(c *gin.Context) {
+
+	users, err := h.service.GetAllUser()
+
+	if err != nil {
+		response := helper.ApiResponse("Failed get all users", http.StatusBadRequest, "failed", []user.User{})
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	if len(users) == 0 {
+		response := helper.ApiResponse("Failed get all users", http.StatusBadRequest, "failed", []user.User{})
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	response := helper.ApiResponse("Failed get all users", http.StatusBadRequest, "failed", users)
+	c.JSON(http.StatusBadRequest, response)
+
+}

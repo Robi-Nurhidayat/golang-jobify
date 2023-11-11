@@ -6,6 +6,7 @@ type UserRepository interface {
 	Register(user User) (User, error)
 	FindByEmail(email string) (User, error)
 	FindById(id int) (User, error)
+	GetAllUser() ([]User, error)
 }
 
 type userRepository struct {
@@ -50,4 +51,17 @@ func (repository *userRepository) FindById(id int) (User, error) {
 	}
 
 	return user, nil
+}
+
+func (repository *userRepository) GetAllUser() ([]User, error) {
+
+	var users []User
+
+	err := repository.db.Find(&users).Error
+
+	if err != nil {
+		return users, err
+	}
+
+	return users, nil
 }

@@ -9,6 +9,7 @@ type UserService interface {
 	Register(input RegisterInput) (User, error)
 	Login(input LoginInput) (User, error)
 	GetUserById(id int) (User, error)
+	GetAllUser() ([]User, error)
 }
 
 type userService struct {
@@ -27,19 +28,28 @@ func (service *userService) Register(input RegisterInput) (User, error) {
 	user.Email = input.Email
 	user.LastName = input.LastName
 	user.Location = input.Location
-	user.Role = "user"
+
 	if len(input.Avatar) != 0 {
 		user.Avatar = input.Avatar
 	}
-
 	user.Avatar = "avatar.jpg"
-
 	hashPassword, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
+
+	if err != nil {
+		return user, err
+	}
+	user.Password = string(hashPassword)
+	users, err := service.GetAllUser()
+
 	if err != nil {
 		return user, err
 	}
 
-	user.Password = string(hashPassword)
+	if len(users) > 0 {
+		user.Role = "user"
+	} else {
+		user.Role = "admin"
+	}
 
 	userRegister, err := service.repository.Register(user)
 	if err != nil {
@@ -85,4 +95,15 @@ func (service *userService) GetUserById(id int) (User, error) {
 	}
 
 	return user, nil
+}
+
+func (service *userService) GetAllUser() ([]User, error) {
+
+	users, err := service.repository.GetAllUser()
+
+	if err != nil {
+		return users, err
+	}
+
+	return users, nil
 }
