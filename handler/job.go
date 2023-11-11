@@ -134,6 +134,13 @@ func (h *JobsHandler) Update(c *gin.Context) {
 		return
 	}
 
+	currentUser := c.MustGet("currentUser").(user.User)
+
+	if currentUser.Id != job.UserId {
+		response := helper.ApiResponse("Not matched id", http.StatusBadRequest, "failed", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
 	var jobInput jobs.JobsUpdateInput
 
 	err = c.ShouldBindJSON(&jobInput)
