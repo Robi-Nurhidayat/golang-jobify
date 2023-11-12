@@ -1,12 +1,11 @@
 package handler
 
 import (
+	"github.com/gin-gonic/gin"
 	"jobify/helper"
 	"jobify/jobs"
 	"jobify/user"
 	"net/http"
-
-	"github.com/gin-gonic/gin"
 )
 
 type JobsHandler struct {
@@ -51,6 +50,29 @@ func (h *JobsHandler) CreateJobs(c *gin.Context) {
 func (h *JobsHandler) GetAllJobs(c *gin.Context) {
 
 	jobsAll, err := h.service.GetAllJobs()
+	if err != nil {
+		response := helper.ApiResponse("Failed get All data", http.StatusBadRequest, "failed", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	var jobFormat []jobs.JobsFormatter
+
+	for _, job := range jobsAll {
+		temp := jobs.FormatterJob(job)
+		jobFormat = append(jobFormat, temp)
+	}
+	response := helper.ApiResponse("Successfully create job", http.StatusOK, "success", jobFormat)
+
+	c.JSON(http.StatusOK, response)
+
+}
+
+func (h *JobsHandler) GetAllJobsByUser(c *gin.Context) {
+
+	currentUser := c.MustGet("currentUser").(user.User)
+	userId := int(currentUser.Id)
+	jobsAll, err := h.service.GetAllJobsByUser(userId)
 	if err != nil {
 		response := helper.ApiResponse("Failed get All data", http.StatusBadRequest, "failed", nil)
 		c.JSON(http.StatusBadRequest, response)

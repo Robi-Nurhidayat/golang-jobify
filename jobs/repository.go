@@ -5,9 +5,10 @@ import "gorm.io/gorm"
 type JobsRepository interface {
 	CreateJob(jobs Jobs) (Jobs, error)
 	GetAllJobs() ([]Jobs, error)
+	GetAllJobsByUser(userId int) ([]Jobs, error)
 	UpdateJob(jobs Jobs) (Jobs, error)
-	DeleteJob(id int) (int,error)
-	GetById(id int) (Jobs,error)
+	DeleteJob(id int) (int, error)
+	GetById(id int) (Jobs, error)
 }
 
 type jobsRepository struct {
@@ -21,56 +22,69 @@ func NewJobsRepository(db *gorm.DB) JobsRepository {
 }
 
 func (j *jobsRepository) CreateJob(jobs Jobs) (Jobs, error) {
-	
+
 	err := j.db.Create(&jobs).Error
 
 	if err != nil {
-		return jobs,err
+		return jobs, err
 	}
 
-	return jobs,nil
+	return jobs, nil
 }
 
 func (j *jobsRepository) GetAllJobs() ([]Jobs, error) {
-	
+
 	var jobs []Jobs
 
 	err := j.db.Find(&jobs).Error
 
 	if err != nil {
-		return jobs,err
+		return jobs, err
 	}
 
-	return jobs,nil
+	return jobs, nil
+}
+
+func (j *jobsRepository) GetAllJobsByUser(userId int) ([]Jobs, error) {
+
+	var jobs []Jobs
+
+	err := j.db.Where("user_id = ?", userId).Find(&jobs).Error
+
+	if err != nil {
+		return jobs, err
+	}
+
+	return jobs, nil
 }
 
 func (j *jobsRepository) UpdateJob(jobs Jobs) (Jobs, error) {
 	err := j.db.Save(&jobs).Error
 
 	if err != nil {
-		return jobs,err
+		return jobs, err
 	}
 
-	return jobs,err
+	return jobs, err
 }
 
-func (j *jobsRepository) DeleteJob(id int)  (int,error) {
+func (j *jobsRepository) DeleteJob(id int) (int, error) {
 	var jobs Jobs
-	err := j.db.Where("id = ?",id).Delete(&jobs).Error
+	err := j.db.Where("id = ?", id).Delete(&jobs).Error
 
 	if err != nil {
-		return id,err
+		return id, err
 	}
 
-	return id,nil
-} 
-func (j *jobsRepository) GetById(id int)  (Jobs,error) {
+	return id, nil
+}
+func (j *jobsRepository) GetById(id int) (Jobs, error) {
 	var job Jobs
-	err := j.db.Where("id = ?",id).Find(&job).Error
+	err := j.db.Where("id = ?", id).Find(&job).Error
 
 	if err != nil {
-		return job,err
+		return job, err
 	}
 
-	return job,nil
-} 
+	return job, nil
+}
