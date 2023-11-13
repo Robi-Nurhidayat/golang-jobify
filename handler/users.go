@@ -96,7 +96,16 @@ func (h *userHandler) AllUsers(c *gin.Context) {
 		return
 	}
 
-	response := helper.ApiResponse("Failed get all users", http.StatusBadRequest, "failed", users)
+	response := helper.ApiResponse("Success get all users", http.StatusOK, "success", users)
+	c.JSON(http.StatusOK, response)
+
+}
+
+func (h *userHandler) FetchUser(c *gin.Context) {
+
+	currentUser := c.MustGet("currentUser").(user.User)
+
+	response := helper.ApiResponse("success get user", http.StatusOK, "success", user.FormatterUser(currentUser, ""))
 	c.JSON(http.StatusBadRequest, response)
 
 }
