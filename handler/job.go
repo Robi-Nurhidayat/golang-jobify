@@ -6,6 +6,7 @@ import (
 	"jobify/jobs"
 	"jobify/user"
 	"net/http"
+	"strconv"
 )
 
 type JobsHandler struct {
@@ -49,7 +50,10 @@ func (h *JobsHandler) CreateJobs(c *gin.Context) {
 
 func (h *JobsHandler) GetAllJobs(c *gin.Context) {
 
-	jobsAll, err := h.service.GetAllJobs()
+	page, _ := strconv.Atoi(c.Query("page"))
+	pageSize, _ := strconv.Atoi(c.Query("pageSize"))
+
+	jobsAll, err := h.service.GetAllJobs(page, pageSize)
 	if err != nil {
 		response := helper.ApiResponse("Failed get All data", http.StatusBadRequest, "failed", nil)
 		c.JSON(http.StatusBadRequest, response)

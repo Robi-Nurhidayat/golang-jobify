@@ -2,7 +2,7 @@ package jobs
 
 type JobsService interface {
 	CreateJob(input JobsCreateInput) (Jobs, error)
-	GetAllJobs() ([]Jobs, error)
+	GetAllJobs(page, pageSize int) ([]Jobs, error)
 	GetAllJobsByUser(userId int) ([]Jobs, error)
 	DeleteJob(jobId JobId) (int, error)
 	GetById(id int) (Jobs, error)
@@ -38,8 +38,8 @@ func (s *jobsService) CreateJob(input JobsCreateInput) (Jobs, error) {
 	return job, nil
 }
 
-func (s *jobsService) GetAllJobs() ([]Jobs, error) {
-	jobs, err := s.repository.GetAllJobs()
+func (s *jobsService) GetAllJobs(page, pageSize int) ([]Jobs, error) {
+	jobs, err := s.repository.GetAllJobs(page, pageSize)
 
 	if err != nil {
 		return jobs, err

@@ -4,7 +4,7 @@ import "gorm.io/gorm"
 
 type JobsRepository interface {
 	CreateJob(jobs Jobs) (Jobs, error)
-	GetAllJobs() ([]Jobs, error)
+	GetAllJobs(page, pageSize int) ([]Jobs, error)
 	GetAllJobsByUser(userId int) ([]Jobs, error)
 	UpdateJob(jobs Jobs) (Jobs, error)
 	DeleteJob(id int) (int, error)
@@ -32,11 +32,15 @@ func (j *jobsRepository) CreateJob(jobs Jobs) (Jobs, error) {
 	return jobs, nil
 }
 
-func (j *jobsRepository) GetAllJobs() ([]Jobs, error) {
+func (j *jobsRepository) GetAllJobs(page, pageSize int) ([]Jobs, error) {
 
 	var jobs []Jobs
 
-	err := j.db.Find(&jobs).Error
+	offset := (page - 1) * pageSize
+
+	//err := j.db.Find(&jobs).Error
+
+	err := j.db.Limit(pageSize).Offset(offset).Find(&jobs).Error
 
 	if err != nil {
 		return jobs, err
