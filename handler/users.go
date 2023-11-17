@@ -63,7 +63,7 @@ func (h *userHandler) Login(c *gin.Context) {
 
 	userLogin, err := h.service.Login(input)
 	if err != nil {
-		response := helper.ApiResponse("failed login", http.StatusBadRequest, "failed", helper.FormatValidationError(err))
+		response := helper.ApiResponse("failed login", http.StatusBadRequest, "failed", "not found that email")
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
