@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/golang-jwt/jwt/v5"
 	"jobify/auth"
 	"jobify/handler"
@@ -39,6 +40,7 @@ func main() {
 	jobsHandler := handler.NewJobsHandler(jobService)
 
 	r := gin.Default()
+	r.Use(cors.Default())
 	api := r.Group("api/v1")
 	//users
 	api.POST("/user/register", userHandler.Register)
