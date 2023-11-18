@@ -46,7 +46,7 @@ func main() {
 	api.POST("/user/register", userHandler.Register)
 	api.POST("/user/login", userHandler.Login)
 	api.GET("/user/get-all", userHandler.AllUsers)
-	api.GET("/user/get-single", authMiddleware(authService, userService), userHandler.FetchUser)
+	api.GET("/user/fetchUser", authMiddleware(authService, userService), userHandler.FetchUser)
 
 	//jobs
 	api.POST("/job", authMiddleware(authService, userService), jobsHandler.CreateJobs)
