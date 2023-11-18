@@ -106,6 +106,6 @@ func (h *userHandler) FetchUser(c *gin.Context) {
 	currentUser := c.MustGet("currentUser").(user.User)
 
 	response := helper.ApiResponse("success get user", http.StatusOK, "success", user.FormatterUser(currentUser, ""))
-	c.JSON(http.StatusBadRequest, response)
+	c.JSON(http.StatusOK, response)
 
 }
