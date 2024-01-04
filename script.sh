@@ -8,4 +8,4 @@ docker run -it  mysql82 mysql root -p
 migrate create -ext sql -dir db/migrations -seq initial_schema
 
 # menjalankan migrations
-migrate -database "mysql://root:secret@tcp(localhost:3307)/jobify?charset=utf8mb4&parseTime=True&loc=Local" -path db/migrations up
+migrate -database "mysql://root:secret@tcp(localhost:3307)/jobify" -path db/migrations -verbose up

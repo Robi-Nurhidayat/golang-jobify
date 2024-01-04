@@ -2,7 +2,7 @@ package jobs
 
 import "time"
 
-type Jobs struct {
+type Job struct {
 	Id          int
 	UserId      int
 	Company     string
@@ -12,4 +12,8 @@ type Jobs struct {
 	JobLocation string
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
+}
+
+func (Job) TableName() string {
+	return "jobs"
 }

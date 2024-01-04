@@ -3,12 +3,12 @@ package jobs
 import "gorm.io/gorm"
 
 type JobsRepository interface {
-	CreateJob(jobs Jobs) (Jobs, error)
-	GetAllJobs(page, pageSize int) ([]Jobs, error)
-	GetAllJobsByUser(userId int) ([]Jobs, error)
-	UpdateJob(jobs Jobs) (Jobs, error)
+	CreateJob(jobs Job) (Job, error)
+	GetAllJobs(page, pageSize int) ([]Job, error)
+	GetAllJobsByUser(userId int) ([]Job, error)
+	UpdateJob(jobs Job) (Job, error)
 	DeleteJob(id int) (int, error)
-	GetById(id int) (Jobs, error)
+	GetById(id int) (Job, error)
 }
 
 type jobsRepository struct {
@@ -21,7 +21,7 @@ func NewJobsRepository(db *gorm.DB) JobsRepository {
 	}
 }
 
-func (j *jobsRepository) CreateJob(jobs Jobs) (Jobs, error) {
+func (j *jobsRepository) CreateJob(jobs Job) (Job, error) {
 
 	err := j.db.Create(&jobs).Error
 
@@ -32,9 +32,9 @@ func (j *jobsRepository) CreateJob(jobs Jobs) (Jobs, error) {
 	return jobs, nil
 }
 
-func (j *jobsRepository) GetAllJobs(page, pageSize int) ([]Jobs, error) {
+func (j *jobsRepository) GetAllJobs(page, pageSize int) ([]Job, error) {
 
-	var jobs []Jobs
+	var jobs []Job
 
 	offset := (page - 1) * pageSize
 
@@ -49,9 +49,9 @@ func (j *jobsRepository) GetAllJobs(page, pageSize int) ([]Jobs, error) {
 	return jobs, nil
 }
 
-func (j *jobsRepository) GetAllJobsByUser(userId int) ([]Jobs, error) {
+func (j *jobsRepository) GetAllJobsByUser(userId int) ([]Job, error) {
 
-	var jobs []Jobs
+	var jobs []Job
 
 	err := j.db.Where("user_id = ?", userId).Find(&jobs).Error
 
@@ -62,7 +62,7 @@ func (j *jobsRepository) GetAllJobsByUser(userId int) ([]Jobs, error) {
 	return jobs, nil
 }
 
-func (j *jobsRepository) UpdateJob(jobs Jobs) (Jobs, error) {
+func (j *jobsRepository) UpdateJob(jobs Job) (Job, error) {
 	err := j.db.Save(&jobs).Error
 
 	if err != nil {
@@ -73,7 +73,7 @@ func (j *jobsRepository) UpdateJob(jobs Jobs) (Jobs, error) {
 }
 
 func (j *jobsRepository) DeleteJob(id int) (int, error) {
-	var jobs Jobs
+	var jobs Job
 	err := j.db.Where("id = ?", id).Delete(&jobs).Error
 
 	if err != nil {
@@ -82,8 +82,8 @@ func (j *jobsRepository) DeleteJob(id int) (int, error) {
 
 	return id, nil
 }
-func (j *jobsRepository) GetById(id int) (Jobs, error) {
-	var job Jobs
+func (j *jobsRepository) GetById(id int) (Job, error) {
+	var job Job
 	err := j.db.Where("id = ?", id).Find(&job).Error
 
 	if err != nil {

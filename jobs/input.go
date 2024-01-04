@@ -24,3 +24,9 @@ type JobsUpdateInput struct {
 type JobId struct {
 	Id int `uri:"id"`
 }
+
+
+type PageFormat struct {
+	Page     int `form:"page" binding:"required,min=1"`
+	PageSize int `form:"pageSize" binding:"required,min=1"`
+}

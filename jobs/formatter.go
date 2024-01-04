@@ -10,7 +10,7 @@ type JobsFormatter struct {
 	JobLocation string `json:"job_location"`
 }
 
-func FormatterJob(job Jobs) JobsFormatter {
+func FormatterJob(job Job) JobsFormatter {
 
 	formatter := JobsFormatter{}
 

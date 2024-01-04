@@ -54,6 +54,7 @@ func main() {
 	api.GET("/jobs", authMiddleware(authService, userService), jobsHandler.GetAllJobs)
 	api.GET("/jobs/user", authMiddleware(authService, userService), jobsHandler.GetAllJobsByUser)
 	api.DELETE("/jobs/:id", authMiddleware(authService, userService), jobsHandler.DeleteJob)
+	api.GET("/jobs/:id", authMiddleware(authService, userService), jobsHandler.FindById)
 	api.PUT("/jobs/:id", authMiddleware(authService, userService), jobsHandler.Update)
 
 	r.Run()

@@ -1,12 +1,12 @@
 package handler
 
 import (
-	"github.com/gin-gonic/gin"
 	"jobify/helper"
 	"jobify/jobs"
 	"jobify/user"
 	"net/http"
-	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 type JobsHandler struct {
@@ -50,10 +50,17 @@ func (h *JobsHandler) CreateJobs(c *gin.Context) {
 
 func (h *JobsHandler) GetAllJobs(c *gin.Context) {
 
-	page, _ := strconv.Atoi(c.Query("page"))
-	pageSize, _ := strconv.Atoi(c.Query("pageSize"))
+	
+	var pageFormat jobs.PageFormat
 
-	jobsAll, err := h.service.GetAllJobs(page, pageSize)
+	err := c.ShouldBind(&pageFormat)
+	if err != nil {
+		response := helper.ApiResponse("Failed get All data", http.StatusBadRequest, "failed", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	jobsAll, err := h.service.GetAllJobs(pageFormat.Page, pageFormat.PageSize)
 	if err != nil {
 		response := helper.ApiResponse("Failed get All data", http.StatusBadRequest, "failed", nil)
 		c.JSON(http.StatusBadRequest, response)
@@ -192,6 +199,39 @@ func (h *JobsHandler) Update(c *gin.Context) {
 	}
 
 	response := helper.ApiResponse("successfully update job", http.StatusOK, "success", jobs.FormatterJob(jobUpdate))
+	c.JSON(http.StatusOK, response)
+
+}
+
+
+func (h *JobsHandler) FindById(c *gin.Context) {
+
+	var input jobs.JobId
+	err := c.ShouldBindUri(&input)
+
+	if err != nil {
+		response := helper.ApiResponse("Not found id", http.StatusFound, "failed", "tidak ada id")
+		c.JSON(http.StatusBadRequest, response)
+
+		return
+	}
+
+	job, err := h.service.GetById(input.Id)
+
+	if err != nil {
+		response := helper.ApiResponse("Not found id", http.StatusFound, "failed", "tidak ada id")
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	if job.Id == 0 {
+		response := helper.ApiResponse("Not found id", http.StatusFound, "failed", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	
+	response := helper.ApiResponse("successfully delete", http.StatusOK, "success", jobs.FormatterJob(job))
 	c.JSON(http.StatusOK, response)
 
 }
