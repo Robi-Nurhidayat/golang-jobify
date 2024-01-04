@@ -1,0 +1,23 @@
+version: '3'
+services:
+  postgres:
+    image: mysql:8.2
+    restart: always
+    volumes:
+      - data: /etc/mysql/conf.d
+    environment:
+      - MYSQL_ROOT_PASSWORD= secret
+      - MYSQL_DATABASE= jobify
+      - MYSQL_USER= root
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+
+volumes:
+  data:
+  
