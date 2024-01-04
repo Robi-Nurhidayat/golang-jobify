@@ -1,8 +1,6 @@
 package main
 
 import (
-	"github.com/gin-contrib/cors"
-	"github.com/golang-jwt/jwt/v5"
 	"jobify/auth"
 	"jobify/handler"
 	"jobify/helper"
@@ -12,6 +10,9 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/gin-contrib/cors"
+	"github.com/golang-jwt/jwt/v5"
+
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -19,7 +20,7 @@ import (
 
 func main() {
 
-	dsn := "root:@tcp(localhost:3306)/jobify?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "root:secret@tcp(localhost:3307)/jobify?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {
